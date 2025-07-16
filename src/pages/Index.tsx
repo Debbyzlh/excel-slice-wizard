@@ -63,9 +63,6 @@ const Index = () => {
         <div className="container mx-auto px-6 py-8">
           <div className="text-center">
             <h1 className="text-3xl font-bold text-foreground tracking-tight">Excel 拆分工具</h1>
-            <p className="text-muted-foreground mt-2 text-lg">
-              简单高效的 Excel 文件拆分工具
-            </p>
           </div>
         </div>
       </header>
@@ -75,10 +72,10 @@ const Index = () => {
         <div className="flex items-center justify-center mb-12">
           <div className="flex items-center space-x-2">
             {[
-              { step: "upload", label: "上传文件", icon: "📁" },
-              { step: "config", label: "配置拆分", icon: "⚙️" },
-              { step: "processing", label: "处理中", icon: "⚡" },
-              { step: "download", label: "下载结果", icon: "📥" },
+              { step: "upload", label: "上传文件" },
+              { step: "config", label: "配置拆分" },
+              { step: "processing", label: "处理中" },
+              { step: "download", label: "下载结果" },
             ].map((item, index) => {
               const isActive = currentStep === item.step;
               const isCompleted = 
@@ -90,7 +87,7 @@ const Index = () => {
                 <div key={item.step} className="flex items-center">
                   <div className="flex flex-col items-center">
                     <div className={`
-                      flex items-center justify-center w-12 h-12 rounded-full border-2 text-lg font-medium transition-all duration-300
+                      flex items-center justify-center w-12 h-12 rounded-full border-2 text-sm font-medium transition-all duration-300
                       ${isActive 
                         ? "border-primary bg-primary text-primary-foreground shadow-apple scale-110" 
                         : isCompleted
@@ -98,7 +95,7 @@ const Index = () => {
                         : "border-muted-foreground/30 text-muted-foreground"
                       }
                     `}>
-                      {item.icon}
+                      {index + 1}
                     </div>
                     <span className={`mt-2 text-xs font-medium transition-colors ${
                       isActive ? "text-primary" : isCompleted ? "text-primary/70" : "text-muted-foreground"

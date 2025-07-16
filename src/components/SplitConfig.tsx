@@ -24,6 +24,7 @@ interface SplitConfigType {
   selectedColumns?: string[];
   conditionColumn?: string;
   namingRule: string;
+  namingColumn?: string;
 }
 
 interface SplitConfigProps {
@@ -38,7 +39,8 @@ const SplitConfig = ({ file, onConfigSubmit, onBack }: SplitConfigProps) => {
   const [rowsPerFile, setRowsPerFile] = useState(1000);
   const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
   const [conditionColumn, setConditionColumn] = useState("");
-  const [namingRule, setNamingRule] = useState("{原文件名}_{工作表}_{序号}");
+  const [namingRule, setNamingRule] = useState("sequential");
+  const [namingColumn, setNamingColumn] = useState("");
   
   // 模拟列数据
   const mockColumns = ["A", "B", "C", "D", "E", "姓名", "部门", "职位", "薪资", "入职日期"];
@@ -89,6 +91,7 @@ const SplitConfig = ({ file, onConfigSubmit, onBack }: SplitConfigProps) => {
       selectedColumns: splitType === "columns" ? selectedColumns : undefined,
       conditionColumn: splitType === "condition" ? conditionColumn : undefined,
       namingRule,
+      namingColumn: namingColumn || undefined,
     };
     
     onConfigSubmit(config);
@@ -241,27 +244,48 @@ const SplitConfig = ({ file, onConfigSubmit, onBack }: SplitConfigProps) => {
 
         {/* 右侧预览和命名 */}
         <div className="space-y-6">
-          {/* 命名规则 */}
           <Card>
             <CardHeader>
-              <CardTitle>文件命名规则</CardTitle>
+              <CardTitle>文件命名</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                <Input
-                  value={namingRule}
-                  onChange={(e) => setNamingRule(e.target.value)}
-                  placeholder="例如：{原文件名}_{工作表}_{序号}"
-                />
-                <div className="text-xs text-muted-foreground">
-                  <p>可用变量：</p>
-                  <div className="mt-1 space-x-1">
-                    <Badge variant="secondary">{"{原文件名}"}</Badge>
-                    <Badge variant="secondary">{"{工作表}"}</Badge>
-                    <Badge variant="secondary">{"{序号}"}</Badge>
-                    <Badge variant="secondary">{"{日期}"}</Badge>
+              <div className="space-y-4">
+                <RadioGroup value={namingRule} onValueChange={setNamingRule}>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="sequential" id="sequential" />
+                    <Label htmlFor="sequential" className="text-sm">按序号命名</Label>
                   </div>
-                </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="timestamp" id="timestamp" />
+                    <Label htmlFor="timestamp" className="text-sm">按时间戳命名</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="original" id="original" />
+                    <Label htmlFor="original" className="text-sm">基于原文件名</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="column" id="column" />
+                    <Label htmlFor="column" className="text-sm">基于列值命名</Label>
+                  </div>
+                </RadioGroup>
+                
+                {namingRule === "column" && (
+                  <div className="mt-4">
+                    <Label htmlFor="namingColumn" className="text-sm font-medium">选择命名列</Label>
+                    <Select value={namingColumn} onValueChange={setNamingColumn}>
+                      <SelectTrigger className="w-full mt-2">
+                        <SelectValue placeholder="选择用于命名的列" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {mockColumns.map((column) => (
+                          <SelectItem key={column} value={column}>
+                            {column}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

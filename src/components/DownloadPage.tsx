@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { Download, RefreshCw, CheckCircle, FileArchive, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/use-toast";
+import { CheckCircle, Download, RefreshCw, FileText, Archive, Eye } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 interface TaskResult {
   taskId: string;
@@ -18,168 +17,118 @@ interface DownloadPageProps {
 }
 
 const DownloadPage = ({ result, onStartOver }: DownloadPageProps) => {
-  const [downloading, setDownloading] = useState(false);
-  const [downloadComplete, setDownloadComplete] = useState(false);
-  const { toast } = useToast();
+  const [isDownloading, setIsDownloading] = useState(false);
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
+  const mockFiles = [
+    { name: "员工名单_1.xlsx", size: "245 KB" },
+    { name: "员工名单_2.xlsx", size: "238 KB" },
+    { name: "员工名单_3.xlsx", size: "156 KB" },
+  ];
 
-  const handleDownload = async () => {
-    setDownloading(true);
+  const handleDownload = () => {
+    setIsDownloading(true);
     
-    try {
-      // 模拟下载过程
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // 在实际应用中，这里会发起真实的下载请求
-      // const response = await fetch(`/api/download/${result.taskId}`);
-      // const blob = await response.blob();
-      // const url = window.URL.createObjectURL(blob);
-      // const a = document.createElement('a');
-      // a.href = url;
-      // a.download = `拆分结果_${result.taskId}.zip`;
-      // a.click();
-      
-      setDownloadComplete(true);
-      toast({
-        title: "下载完成",
-        description: "文件已成功下载到您的设备",
-      });
-      
-    } catch (error) {
-      toast({
-        title: "下载失败",
-        description: "下载过程中发生错误，请重试",
-        variant: "destructive",
-      });
-    } finally {
-      setDownloading(false);
-    }
+    // 模拟下载延迟
+    setTimeout(() => {
+      // 创建模拟下载
+      const link = document.createElement('a');
+      link.href = '#';
+      link.download = `拆分结果_${result.taskId}.zip`;
+      link.click();
+      setIsDownloading(false);
+    }, 1500);
   };
 
   return (
     <div className="space-y-6">
-      <div className="text-center">
-        <div className="mb-4">
-          <CheckCircle className="mx-auto h-16 w-16 text-green-600" />
+      <div className="text-center mb-8">
+        <div className="flex items-center justify-center mb-4">
+          <CheckCircle className="w-16 h-16 text-primary" />
         </div>
-        <h2 className="text-xl font-semibold text-foreground mb-2">拆分完成！</h2>
+        <h2 className="text-2xl font-bold text-foreground mb-2">处理完成</h2>
         <p className="text-muted-foreground">
-          您的Excel文件已成功拆分，可以下载结果文件了
+          已生成 {result.fileCount} 个文件
         </p>
       </div>
 
-      <Card className="max-w-2xl mx-auto">
+      <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <FileArchive className="h-5 w-5" />
-            <span>拆分结果</span>
+          <CardTitle className="flex items-center justify-between">
+            <div className="flex items-center">
+              <Archive className="w-5 h-5 mr-2" />
+              拆分结果
+            </div>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Eye className="w-4 h-4 mr-2" />
+                  查看文件列表
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle>生成的文件列表</DialogTitle>
+                </DialogHeader>
+                <div className="max-h-96 overflow-y-auto">
+                  <div className="space-y-2">
+                    {mockFiles.map((file, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                        <div className="flex items-center">
+                          <FileText className="w-4 h-4 mr-2 text-primary" />
+                          <div>
+                            <div className="text-sm font-medium">{file.name}</div>
+                            <div className="text-xs text-muted-foreground">{file.size}</div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
-          {/* 结果统计 */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="text-center p-4 bg-muted/30 rounded-lg">
+        <CardContent>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="text-center p-4 bg-muted/50 rounded-lg">
               <div className="text-2xl font-bold text-primary">{result.fileCount}</div>
               <div className="text-sm text-muted-foreground">生成文件数</div>
             </div>
-            <div className="text-center p-4 bg-muted/30 rounded-lg">
-              <div className="text-2xl font-bold text-primary">{formatFileSize(result.totalSize)}</div>
+            <div className="text-center p-4 bg-muted/50 rounded-lg">
+              <div className="text-2xl font-bold text-primary">{(result.totalSize / 1024 / 1024).toFixed(1)} MB</div>
               <div className="text-sm text-muted-foreground">总文件大小</div>
             </div>
-            <div className="text-center p-4 bg-muted/30 rounded-lg">
-              <div className="text-2xl font-bold text-primary">ZIP</div>
-              <div className="text-sm text-muted-foreground">压缩格式</div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* 文件列表预览 */}
-          <div className="space-y-3">
-            <h4 className="font-medium text-foreground">包含文件预览：</h4>
-            <div className="space-y-2 max-h-40 overflow-y-auto">
-              {Array.from({ length: Math.min(result.fileCount, 5) }, (_, i) => (
-                <div key={i} className="flex items-center justify-between p-2 bg-muted/20 rounded text-sm">
-                  <span className="text-foreground">数据表_Sheet1_{String(i + 1).padStart(3, '0')}.xlsx</span>
-                  <Badge variant="secondary" className="text-xs">
-                    {formatFileSize(result.totalSize / result.fileCount)}
-                  </Badge>
-                </div>
-              ))}
-              {result.fileCount > 5 && (
-                <div className="text-center text-sm text-muted-foreground">
-                  ... 还有 {result.fileCount - 5} 个文件
-                </div>
-              )}
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* 下载按钮 */}
-          <div className="space-y-4">
-            <Button 
-              onClick={handleDownload} 
-              disabled={downloading}
-              size="lg"
-              className="w-full"
-            >
-              {downloading ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  下载中...
-                </>
-              ) : downloadComplete ? (
-                <>
-                  <CheckCircle className="h-4 w-4 mr-2" />
-                  重新下载
-                </>
-              ) : (
-                <>
-                  <Download className="h-4 w-4 mr-2" />
-                  下载 ZIP 文件
-                </>
-              )}
-            </Button>
-
-            {downloadComplete && (
-              <div className="text-center text-sm text-green-600 flex items-center justify-center">
-                <CheckCircle className="h-4 w-4 mr-1" />
-                文件已下载完成
-              </div>
-            )}
           </div>
         </CardContent>
       </Card>
 
-      {/* 操作选项 */}
-      <Card className="max-w-2xl mx-auto">
-        <CardContent className="p-6">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Button variant="outline" onClick={onStartOver} className="flex-1">
-              <RefreshCw className="h-4 w-4 mr-2" />
-              处理新文件
-            </Button>
-            <Button variant="outline" className="flex-1">
-              <Clock className="h-4 w-4 mr-2" />
-              查看历史记录
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* 温馨提示 */}
-      <div className="text-center text-sm text-muted-foreground max-w-md mx-auto">
-        <p>下载的ZIP文件包含所有拆分后的Excel文件。</p>
-        <p className="mt-1">文件将在24小时后自动清理，请及时下载。</p>
+      <div className="flex gap-4">
+        <Button 
+          size="lg" 
+          className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
+          onClick={handleDownload}
+          disabled={isDownloading}
+        >
+          <Download className="w-5 h-5 mr-2" />
+          {isDownloading ? "准备下载..." : "下载结果"}
+        </Button>
+        
+        <Button 
+          variant="outline" 
+          size="lg"
+          onClick={onStartOver}
+        >
+          <RefreshCw className="w-5 h-5 mr-2" />
+          重新开始
+        </Button>
       </div>
+
+      {isDownloading && (
+        <div className="space-y-2">
+          <Progress value={75} className="w-full" />
+          <p className="text-sm text-muted-foreground text-center">正在准备下载文件...</p>
+        </div>
+      )}
     </div>
   );
 };
