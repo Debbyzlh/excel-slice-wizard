@@ -139,7 +139,7 @@ const SplitConfig = ({ file, onConfigSubmit, onBack }: SplitConfigProps) => {
                       id={sheet}
                       checked={selectedSheets.includes(sheet)}
                       onCheckedChange={() => handleSheetToggle(sheet)}
-                      className="border-2 data-[state=checked]:bg-selection data-[state=checked]:border-selection"
+                      className="border-2 data-[state=checked]:bg-selection data-[state=checked]:border-selection data-[state=checked]:text-selection-foreground"
                     />
                     <Label htmlFor={sheet} className="cursor-pointer">{sheet}</Label>
                   </div>
