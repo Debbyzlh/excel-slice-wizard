@@ -142,6 +142,7 @@ const Index = () => {
             <DownloadPage 
               result={taskResult}
               onStartOver={handleStartOver}
+              onBackToConfig={() => setCurrentStep("config")}
             />
           )}
         </div>

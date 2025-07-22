@@ -123,97 +123,100 @@ const SplitConfig = ({ file, onConfigSubmit, onBack }: SplitConfigProps) => {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* 左侧配置 */}
-        <div className="space-y-6">
-          {/* 选择工作表 */}
-          <Card className="hover:shadow-card transition-shadow duration-300">
-            <CardHeader>
-              <CardTitle>选择工作表</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {file.sheets.map(sheet => (
-                <div key={sheet} className="flex items-center space-x-2">
-                  <Checkbox 
-                    id={sheet}
-                    checked={selectedSheets.includes(sheet)}
-                    onCheckedChange={() => handleSheetToggle(sheet)}
-                  />
-                  <Label htmlFor={sheet} className="cursor-pointer">{sheet}</Label>
+      <div className="h-[60vh] overflow-y-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pr-2">
+          {/* 左侧配置 */}
+          <div className="space-y-6">
+            {/* 选择工作表 */}
+            <Card className="hover:shadow-card transition-shadow duration-300">
+              <CardHeader>
+                <CardTitle>选择工作表</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {file.sheets.map(sheet => (
+                  <div key={sheet} className="flex items-center space-x-2">
+                    <Checkbox 
+                      id={sheet}
+                      checked={selectedSheets.includes(sheet)}
+                      onCheckedChange={() => handleSheetToggle(sheet)}
+                      className="border-2 data-[state=checked]:bg-selection data-[state=checked]:border-selection"
+                    />
+                    <Label htmlFor={sheet} className="cursor-pointer">{sheet}</Label>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* 拆分列选择 */}
+            <Card className="hover:shadow-card transition-shadow duration-300">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Settings className="h-5 w-5" />
+                  <span>选择拆分列</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <Label className="text-sm">选择用于拆分的列</Label>
+                  <Select value={conditionColumn} onValueChange={setConditionColumn}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="选择列" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {mockColumns.map(column => (
+                        <SelectItem key={column} value={column}>{column}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
-              ))}
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
 
-          {/* 拆分列选择 */}
-          <Card className="hover:shadow-card transition-shadow duration-300">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Settings className="h-5 w-5" />
-                <span>选择拆分列</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <Label className="text-sm">选择用于拆分的列</Label>
-                <Select value={conditionColumn} onValueChange={setConditionColumn}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="选择列" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {mockColumns.map(column => (
-                      <SelectItem key={column} value={column}>{column}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+          {/* 右侧预览和命名 */}
+          <div className="space-y-6">
+            <Card className="hover:shadow-card transition-shadow duration-300">
+              <CardHeader>
+                <CardTitle>文件命名</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <Label className="text-sm font-medium">选择命名列</Label>
+                  <Select value={namingColumn} onValueChange={setNamingColumn}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="选择用于命名的列" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {mockColumns.map((column) => (
+                        <SelectItem key={column} value={column}>
+                          {column}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardContent>
+            </Card>
 
-        {/* 右侧预览和命名 */}
-        <div className="space-y-6">
-          <Card className="hover:shadow-card transition-shadow duration-300">
-            <CardHeader>
-              <CardTitle>文件命名</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <Label className="text-sm font-medium">选择命名列</Label>
-                <Select value={namingColumn} onValueChange={setNamingColumn}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="选择用于命名的列" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {mockColumns.map((column) => (
-                      <SelectItem key={column} value={column}>
-                        {column}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* 预览结果 */}
-          <Card className="hover:shadow-card transition-shadow duration-300">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Eye className="h-5 w-5" />
-                <span>预览结果</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="p-3 bg-muted rounded-lg">
-                  <div className="text-sm font-medium text-foreground">
-                    {getPreviewInfo()}
+            {/* 预览结果 */}
+            <Card className="hover:shadow-card transition-shadow duration-300">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Eye className="h-5 w-5" />
+                  <span>预览结果</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="p-3 bg-muted rounded-lg">
+                    <div className="text-sm font-medium text-foreground">
+                      {getPreviewInfo()}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
 
