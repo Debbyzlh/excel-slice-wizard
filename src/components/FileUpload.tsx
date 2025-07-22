@@ -122,14 +122,7 @@ const FileUpload = ({ onFileUploaded }: FileUploadProps) => {
 
   return (
     <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-xl font-semibold text-foreground mb-2">上传 Excel 文件</h2>
-        <p className="text-muted-foreground">
-          支持 .xlsx 和 .xls 格式，文件大小不超过 50MB
-        </p>
-      </div>
-
-      <Card className="mx-auto max-w-2xl">
+      <Card className="mx-auto max-w-2xl hover:shadow-card transition-shadow duration-300">
         <CardContent className="p-6">
           {!uploading ? (
           <div

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Upload, Settings, RefreshCw, Download } from "lucide-react";
 import FileUpload from "@/components/FileUpload";
 import SplitConfigComponent from "@/components/SplitConfig";
 import ProcessingPage from "@/components/ProcessingPage";
@@ -72,10 +73,10 @@ const Index = () => {
         <div className="flex items-center justify-center mb-12">
           <div className="flex items-center space-x-2">
             {[
-              { step: "upload", label: "上传文件" },
-              { step: "config", label: "配置拆分" },
-              { step: "processing", label: "处理中" },
-              { step: "download", label: "下载结果" },
+              { step: "upload", label: "上传文件", icon: Upload },
+              { step: "config", label: "配置拆分", icon: Settings },
+              { step: "processing", label: "处理中", icon: RefreshCw },
+              { step: "download", label: "下载结果", icon: Download },
             ].map((item, index) => {
               const isActive = currentStep === item.step;
               const isCompleted = 
@@ -95,7 +96,7 @@ const Index = () => {
                         : "border-muted-foreground/30 text-muted-foreground"
                       }
                     `}>
-                      {index + 1}
+                      <item.icon className="h-5 w-5" />
                     </div>
                     <span className={`mt-2 text-xs font-medium transition-colors ${
                       isActive ? "text-primary" : isCompleted ? "text-primary/70" : "text-muted-foreground"
