@@ -144,11 +144,13 @@ const SplitConfig = ({ file, onConfigSubmit, onBack }: SplitConfigProps) => {
               <CardContent className="space-y-3">
                 {file.sheets.map(sheet => (
                   <div key={sheet} className="flex items-center space-x-2">
-                    <Checkbox 
-                      id={sheet}
-                      checked={selectedSheets.includes(sheet)}
-                      onCheckedChange={() => handleSheetToggle(sheet)}
-                      className="border-2 data-[state=checked]:bg-apple-blue data-[state=checked]:border-apple-blue data-[state=checked]:text-apple-blue-foreground"
+                    <div
+                      onClick={() => handleSheetToggle(sheet)}
+                      className={`w-4 h-4 rounded-full border-2 cursor-pointer transition-all ${
+                        selectedSheets.includes(sheet)
+                          ? 'bg-apple-blue border-apple-blue'
+                          : 'border-border bg-background'
+                      }`}
                     />
                     <Label htmlFor={sheet} className="cursor-pointer">{sheet}</Label>
                   </div>
