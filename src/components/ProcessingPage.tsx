@@ -178,7 +178,7 @@ const ProcessingPage = ({ file, config, onComplete, onCancel }: ProcessingPagePr
           <div className="flex items-center justify-center space-x-2">
             {processing ? (
               <>
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
+                <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
                 <span className="text-sm text-muted-foreground">处理中...</span>
               </>
             ) : error ? (

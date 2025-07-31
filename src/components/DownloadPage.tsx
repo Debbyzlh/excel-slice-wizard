@@ -112,7 +112,7 @@ const DownloadPage = ({ result, onStartOver, onBackToConfig }: DownloadPageProps
         
         <Button 
           size="lg" 
-          className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
+          className="flex-1 bg-apple-blue hover:bg-apple-blue/90 text-apple-blue-foreground"
           onClick={handleDownload}
           disabled={isDownloading}
         >

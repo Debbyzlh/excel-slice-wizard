@@ -25,6 +25,7 @@ interface SplitConfigType {
   conditionColumn?: string;
   namingRule: string;
   namingColumn?: string;
+  headerRow?: number;
 }
 
 interface SplitConfigProps {
@@ -37,6 +38,7 @@ const SplitConfig = ({ file, onConfigSubmit, onBack }: SplitConfigProps) => {
   const [selectedSheets, setSelectedSheets] = useState<string[]>([file.sheets[0]]);
   const [conditionColumn, setConditionColumn] = useState("");
   const [namingColumn, setNamingColumn] = useState("");
+  const [headerRow, setHeaderRow] = useState<number>(1);
   
   // 模拟列数据
   const mockColumns = ["A", "B", "C", "D", "E", "姓名", "部门", "职位", "薪资", "入职日期"];
@@ -72,6 +74,7 @@ const SplitConfig = ({ file, onConfigSubmit, onBack }: SplitConfigProps) => {
       conditionColumn,
       namingRule: "column",
       namingColumn: namingColumn || undefined,
+      headerRow,
     };
     
     onConfigSubmit(config);
@@ -124,9 +127,9 @@ const SplitConfig = ({ file, onConfigSubmit, onBack }: SplitConfigProps) => {
       </Card>
 
       <div className="h-[60vh] overflow-y-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pr-2">
-          {/* 左侧配置 */}
-          <div className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pr-2">
+          {/* 左侧配置列 */}
+          <div className="lg:col-span-2 space-y-4">
             {/* 选择工作表 */}
             <Card className="hover:shadow-card transition-shadow duration-300">
               <CardHeader>
@@ -139,11 +142,33 @@ const SplitConfig = ({ file, onConfigSubmit, onBack }: SplitConfigProps) => {
                       id={sheet}
                       checked={selectedSheets.includes(sheet)}
                       onCheckedChange={() => handleSheetToggle(sheet)}
-                      className="border-2 data-[state=checked]:bg-selection data-[state=checked]:border-selection data-[state=checked]:text-selection-foreground"
+                      className="border-2 data-[state=checked]:bg-apple-blue data-[state=checked]:border-apple-blue data-[state=checked]:text-apple-blue-foreground"
                     />
                     <Label htmlFor={sheet} className="cursor-pointer">{sheet}</Label>
                   </div>
                 ))}
+              </CardContent>
+            </Card>
+
+            {/* 选择Header行 */}
+            <Card className="hover:shadow-card transition-shadow duration-300">
+              <CardHeader>
+                <CardTitle>选择Header行</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <Label className="text-sm">选择包含列标题的行</Label>
+                  <Select value={headerRow.toString()} onValueChange={(value) => setHeaderRow(parseInt(value))}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="选择Header行" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[1, 2, 3, 4, 5].map(row => (
+                        <SelectItem key={row} value={row.toString()}>第 {row} 行</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </CardContent>
             </Card>
 
@@ -171,10 +196,8 @@ const SplitConfig = ({ file, onConfigSubmit, onBack }: SplitConfigProps) => {
                 </div>
               </CardContent>
             </Card>
-          </div>
 
-          {/* 右侧预览和命名 */}
-          <div className="space-y-6">
+            {/* 文件命名 */}
             <Card className="hover:shadow-card transition-shadow duration-300">
               <CardHeader>
                 <CardTitle>文件命名</CardTitle>
@@ -197,8 +220,10 @@ const SplitConfig = ({ file, onConfigSubmit, onBack }: SplitConfigProps) => {
                 </div>
               </CardContent>
             </Card>
+          </div>
 
-            {/* 预览结果 */}
+          {/* 右侧预览 */}
+          <div className="space-y-6">
             <Card className="hover:shadow-card transition-shadow duration-300">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
