@@ -52,17 +52,23 @@ const SplitConfig = ({ file, onConfigSubmit, onBack }: SplitConfigProps) => {
   };
 
 
-  const getPreviewInfo = () => {
-    if (selectedSheets.length === 0) return "请选择至少一个工作表";
-    if (!conditionColumn) return "请选择拆分列";
+  const getPreviewFileList = () => {
+    if (selectedSheets.length === 0) return ["请选择至少一个工作表"];
+    if (!conditionColumn) return ["请选择拆分列"];
     
-    let filesCount = 0;
+    const fileNames: string[] = [];
     selectedSheets.forEach(sheet => {
-      // 假设有3个不同的条件值
-      filesCount += 3;
+      // 模拟基于拆分列的文件名
+      const values = ["技术部", "市场部", "人事部"];
+      values.forEach(value => {
+        const fileName = namingColumn 
+          ? `${sheet}_${value}.xlsx`
+          : `${sheet}_${conditionColumn}_${value}.xlsx`;
+        fileNames.push(fileName);
+      });
     });
     
-    return `预计生成 ${filesCount} 个文件`;
+    return fileNames;
   };
 
   const handleSubmit = () => {
@@ -233,9 +239,13 @@ const SplitConfig = ({ file, onConfigSubmit, onBack }: SplitConfigProps) => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="p-3 bg-muted rounded-lg">
-                    <div className="text-sm font-medium text-foreground">
-                      {getPreviewInfo()}
+                  <div className="p-3 bg-muted rounded-lg max-h-60 overflow-y-auto">
+                    <div className="space-y-2">
+                      {getPreviewFileList().map((fileName, index) => (
+                        <div key={index} className="text-sm text-foreground">
+                          • {fileName}
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>

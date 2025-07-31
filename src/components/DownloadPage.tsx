@@ -42,12 +42,6 @@ const DownloadPage = ({ result, onStartOver, onBackToConfig }: DownloadPageProps
 
   return (
     <div className="space-y-6">
-      <div className="text-center mb-8">
-        <div className="flex items-center justify-center mb-4">
-          <CheckCircle className="w-16 h-16 text-primary" />
-        </div>
-        <h2 className="text-2xl font-bold text-foreground mb-2">处理完成</h2>
-      </div>
 
       <Card className="mb-6">
         <CardHeader>
@@ -112,7 +106,7 @@ const DownloadPage = ({ result, onStartOver, onBackToConfig }: DownloadPageProps
         
         <Button 
           size="lg" 
-          className="flex-1 bg-apple-blue hover:bg-apple-blue/90 text-apple-blue-foreground"
+          className="flex-1 bg-apple-blue hover:bg-apple-blue/90 text-white"
           onClick={handleDownload}
           disabled={isDownloading}
         >
